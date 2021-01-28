@@ -677,3 +677,7 @@ rasterImage(legend_image, 0, 0.25, 0.3,0.75)
 text(x=0.3, y = seq(0.25,0.75,length.out=2), labels = format(round(range(breaks.val$brks),2)),cex=1,pos=4)
 text(0.15,0.76,"Effect",pos=3,xpd=NA)
 dev.off()
+
+summary(m.TP)
+summary(m.TN)
+summary(m.Chl)
