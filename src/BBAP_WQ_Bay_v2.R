@@ -108,12 +108,25 @@ dat.qual=data.frame(QUALIFIER=c(NA,"!","A","D","E","F","I","R","T","U","*","?","
 
 ## STORET data (downloaded 2020-12-02; Org ID 21FLDADE)
 ## https://floridadep.gov/dear/watershed-services-program/content/winstoret
-storet.dat1=read.table(paste0(data.path,"DERM/STORET/Water_Quality_Results_20160516_20170710.txt"),sep="|",header=T)
-storet.dat2=read.table(paste0(data.path,"DERM/STORET/Water_Quality_Results_20140501_20160516.txt"),sep="|",header=T)
-storet.dat3=read.table(paste0(data.path,"DERM/STORET/Water_Quality_Results_20120501_20140430.txt"),sep="|",header=T)
-storet.dat4=read.table(paste0(data.path,"DERM/STORET/Water_Quality_Results_20090501_20120430.txt"),sep="|",header=T)
+storet.dat1=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results.txt"),sep="|",header=T)
+storet.dat2=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (1).txt"),sep="|",header=T)
+storet.dat3=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (2).txt"),sep="|",header=T)
+storet.dat4=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (3).txt"),sep="|",header=T)
+storet.dat5=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (4).txt"),sep="|",header=T)
+storet.dat6=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (5).txt"),sep="|",header=T)
+storet.dat7=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (6).txt"),sep="|",header=T)
+storet.dat8=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (7).txt"),sep="|",header=T)
+storet.dat9=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (8).txt"),sep="|",header=T)
+storet.dat10=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (9).txt"),sep="|",header=T)
+storet.dat11=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (10).txt"),sep="|",header=T)
+storet.dat12=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (11).txt"),sep="|",header=T)
+storet.dat13=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results (12).txt"),sep="|",header=T)
+storet.dat14=read.table(paste0(data.path,"DERM/STORET/WY2000_2017/Water_Quality_Results_chla.txt"),sep="|",header=T)
 
-storet.dat=rbind(storet.dat1,storet.dat2,storet.dat3,storet.dat4)
+storet.dat=rbind(storet.dat1,storet.dat2,storet.dat3,storet.dat4,storet.dat5,storet.dat6,
+                 storet.dat7,storet.dat8,storet.dat9,storet.dat10,storet.dat11,storet.dat12,
+                 storet.dat13,storet.dat14)
+storet.dat=storet.dat[!duplicated(storet.dat),]
 storet.dat$Date.EST=date.fun(storet.dat$Act.Date,form="%m/%d/%Y")
 
 range(storet.dat$Date.EST)
@@ -136,7 +149,7 @@ quals$Fatal=with(quals,ifelse(q1%in%subset(dat.qual,FATALYN=="Y")$QUALIFIER|
 
 # subset(storet.dat,Station.ID=="CD05"&Date.EST==date.fun("2015-12-10")&Characteristic=="BOD, Biochemical oxygen demand")
 storet.dat$Result.Value=with(storet.dat,ifelse(Result.Value=="*Non-detect",MDL*-1,as.numeric(as.character(Result.Value))))
-subset(storet.dat,is.na(Result.Value))
+# subset(storet.dat,is.na(Result.Value))
 
 storet.dat$HalfMDL=with(storet.dat,ifelse(Act.Type=="Field Msr/Obs",Result.Value,
                                                 ifelse(abs(Result.Value)<=MDL,MDL/2,abs(Result.Value))))
@@ -156,10 +169,10 @@ ddply(storet.dat,c("Characteristic","Result.Units"),summarise,n.val=N.obs(Statio
 
 storet.parameters=data.frame(Characteristic=c("Turbidity", "Total Suspended Solids (TSS)", "Nitrogen, ammonia (NH3) as NH3", 
   "Phosphorus as PO4", "Nitrogen, Nitrite (NO2) + Nitrate (NO3) as N", 
-  "Phosphorus, phosphate (PO4) as PO4","Chlorophyll a, free of pheophytin", 
-  "Apparent Color","Nitrogen, Kjeldahl","Phosphorus, orthophosphate as PO4","pH", "Dissolved oxygen saturation", 
-  "Dissolved oxygen (DO)", "Salinity", "Specific conductance","Temperature, water", "Nitrogen, ammonia as N"),
-  param=c("Turb","TSS","NH4","TP","NOx","TP","Chla_c","Color","TKN","SRP","pH","DOSat","DO","Sal","SPC","Temp","NH4"))
+  "Phosphorus, phosphate (PO4) as PO4","Chlorophyll a, free of pheophytin","Chlorophyll a, corrected for pheophytin", 
+  "Apparent Color","Nitrogen, Kjeldahl","Phosphorus, orthophosphate as P","Phosphorus, orthophosphate as PO4","pH", "Dissolved oxygen saturation", 
+  "Dissolved oxygen (DO)", "Salinity", "Specific conductance","Temperature, water", "Nitrogen, ammonia as N","Total Organic Carbon (TOC)"),
+  param=c("Turb","TSS","NH4","TP","NOx","TP","Chla_c","Chla_c","Color","TKN","SRP","SRP","pH","DOSat","DO","Sal","SPC","Temp","NH4","TOC"))
 
 storet.dat=merge(storet.dat,storet.parameters,"Characteristic")
 # storet.dat$cen=with(storet.dat,ifelse(HalfMDL==MDL/2,1,0))
@@ -203,7 +216,11 @@ storet.xtab$DIN=with(storet.xtab,ifelse(TNReversal==1,NA,DIN))
 # TP.N=ddply(storet.xtab,c('WY','Station.ID'),summarise,N.val=N.obs(TP),min.date=min(Date.EST),max.date=max(Date.EST))
 
 ## WIN data (downloaded 2020-12-01)
-win.dat=read.table(paste0(data.path,"DERM/WIN/WIN_WAVES_JULIAN_P_20201201160158_36281.txt"),skip=12,sep="|",header=T)
+win.dat1=read.table(paste0(data.path,"DERM/WIN/WIN_WY20172020/WIN_WAVES_JULIAN_P_20210129143519_38678.txt"),skip=10,sep="|",header=T)
+win.dat2=read.table(paste0(data.path,"DERM/WIN/WIN_WY20172020/WIN_WAVES_JULIAN_P_20210129143710_38682.txt"),skip=10,sep="|",header=T)
+win.dat3=read.table(paste0(data.path,"DERM/WIN/WIN_WY20172020/WIN_WAVES_JULIAN_P_20210129143344_38674.txt"),skip=10,sep="|",header=T)
+
+win.dat=rbind(win.dat1,win.dat2,win.dat3)
 win.dat$Activity.Start.Date.Time=date.fun(as.character(win.dat$Activity.Start.Date.Time),form="%m/%d/%Y %H:%M:%S")
 win.dat$Date.EST=date.fun(win.dat$Activity.Start.Date.Time)
 win.dat$Station.ID=win.dat$Monitoring.Location.ID
@@ -229,8 +246,8 @@ win.parameters=data.frame(DEP.Analyte.Name=c("Ammonia (N)",
                                              "Chlorophyll a- uncorrected", 
                                              "Chlorophyll a, free of pheophytin","Chlorophyll a- corrected", "Dissolved Oxygen","Dissolved Oxygen Saturation", "Nitrate-Nitrite (N)", 
                                              "Nitrogen- Total Kjeldahl", "Orthophosphate (P)", "Phosphorus- Total", 
-                                             "Specific Conductance", "Temperature, Water","pH","Salinity","Turbidity","Residues- Nonfilterable (TSS)","Color- Apparent"),
-                          param=c("NH4","Chla","Chla_c","Chla_c","DO","DOSat","NOx","TKN","SRP","TP","SPC","Temp","pH","Sal","Turb","TSS","Color"))
+                                             "Specific Conductance", "Temperature, Water","pH","Salinity","Turbidity","Residues- Nonfilterable (TSS)","Color- Apparent","Carbon- Organic"),
+                          param=c("NH4","Chla","Chla_c","Chla_c","DO","DOSat","NOx","TKN","SRP","TP","SPC","Temp","pH","Sal","Turb","TSS","Color","TOC"))
 win.dat.clean=merge(win.dat.clean,win.parameters,"DEP.Analyte.Name")
 
 win.xtab=cast(win.dat.clean,Station.ID+Date.EST~param,value="HalfMDL",mean)
@@ -257,9 +274,10 @@ win.xtab$TN=with(win.xtab,ifelse(TNReversal==1,NA,TN))
 win.xtab$DIN=with(win.xtab,ifelse(TNReversal==1,NA,DIN))
 
 ## 
+head(storet.xtab)
+head(win.xtab)
 storet.xtab$Chla=NA
-# head(storet.xtab)
-# head(win.xtab)
+storet.xtab$Turb=NA
 storet.xtab=storet.xtab[,names(win.xtab)]
 
 dat.xtab=rbind(storet.xtab,win.xtab)
@@ -323,9 +341,9 @@ length(unique(tmp$WY))
 length(unique(tmp$Station.ID))
 
 m.TP=bam(log(GM.TP)~
-           s(WY,k=6)+
-           s(Longitude,Latitude,bs="tp",k=55,m=c(1,0.5))+
-           ti(Longitude,Latitude,WY,d=c(2,1),bs=c("tp","tp"),k=c(55,6)),
+           s(WY,bs="cc",k=10)+
+           s(Longitude,Latitude,bs="ds",k=65,m=c(1,0.5))+
+           ti(Longitude,Latitude,WY,d=c(2,1),bs=c("ds","cc"),k=c(65,10)),
          data=tmp)
 
 summary(m.TP)
@@ -341,7 +359,7 @@ draw(m.TP)
 
 pdata<-with(tmp,
             expand.grid(
-              WY=c(2010:2019),
+              WY=c(2000:2019),
               Longitude=seq(min(Longitude),max(Longitude),length.out=100),
               Latitude=seq(min(Latitude),max(Latitude),length.out=100)
             ))
@@ -358,21 +376,31 @@ ggplot(pred, aes(x = Longitude, y = Latitude)) +
   coord_quickmap() +
   theme(legend.position = 'right')+theme_void()
 
-WYs=2010:2019
+WYs=2000:2019
 for(i in 1:length(WYs)){
-  tmp=subset(pred,WY==WYs[i])[,c("Fitted","Longitude","Latitude")]; #subset the predicted
-  coordinates(tmp)<-~Longitude + Latitude # Assigns coordinates
-  gridded(tmp)<-TRUE # makes it a grid
+  tmp=subset(pred,WY==WYs[i])[,c("Fitted","Longitude","Latitude")]
+  coordinates(tmp)<-~Longitude + Latitude
+  gridded(tmp)<-TRUE
   # rasterDF<-raster::raster(tmp,layer=1,values=T)
-  tmp=as(tmp,"RasterLayer") # then makes raster layer
-  proj4string(tmp)<-wgs84 # assigns coordinate system 
-  tmp=raster::projectRaster(tmp,crs=wkt(utm17)) # re-project UTM17
-  tmp.m=raster::mask(tmp,bb.nnc.buf) # mask raster to NNC segments
-  assign(paste0("GAM.TP.",WYs[i]),tmp.m) # names the raster
-  print(i) # indicator
+  tmp=as(tmp,"RasterLayer")
+  proj4string(tmp)<-wgs84
+  tmp=raster::projectRaster(tmp,crs=wkt(utm17))
+  tmp.m=raster::mask(tmp,bb.nnc.buf)
+  assign(paste0("GAM.TP.",WYs[i]),tmp.m)
+  print(i)
 }
 
-GAM.TP.stack2=stack(GAM.TP.2010,
+GAM.TP.stack2=stack(GAM.TP.2000,
+                    GAM.TP.2001,
+                    GAM.TP.2002,
+                    GAM.TP.2003,
+                    GAM.TP.2004,
+                    GAM.TP.2005,
+                    GAM.TP.2006,
+                    GAM.TP.2007,
+                    GAM.TP.2008,
+                    GAM.TP.2009,
+                    GAM.TP.2010,
                     GAM.TP.2011,
                     GAM.TP.2012,
                     GAM.TP.2013,
