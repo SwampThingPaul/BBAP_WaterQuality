@@ -139,7 +139,10 @@ q.wq$TN.loadkg=with(q.wq,Load.Calc.kg(Data.Value,TN.int))
 plot(TN.loadkg~Date.EST,subset(q.wq,SITE=="S26"))
 plot(TP.loadkg~Date.EST,subset(q.wq,SITE=="S27"))
 plot(TP.loadkg~Date.EST,subset(q.wq,SITE=="S28"))
+
 plot(TP.loadkg~Date.EST,subset(q.wq,SITE=="S29"))
+plot(Data.Value~Date.EST,subset(q.wq,SITE=="S29"))
+plot(TP~Date.EST,subset(q.wq,SITE=="S29"))
 
 WY.load=ddply(subset(q.wq,WY%in%seq(2001,2017,1)),c("SITE","WY"),summarise,
               TFlow=sum(Data.Value,na.rm=T),
@@ -147,8 +150,6 @@ WY.load=ddply(subset(q.wq,WY%in%seq(2001,2017,1)),c("SITE","WY"),summarise,
               TNLoad=sum(TN.loadkg,na.rm = T))
 WY.load$TP.FWM=with(WY.load,(TPLoad*1e6)/(TFlow*1233481.84))*1000
 WY.load$TN.FWM=with(WY.load,(TNLoad*1e6)/(TFlow*1233481.84))
-
-
 
 
 
