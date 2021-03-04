@@ -127,19 +127,30 @@ derm.dat.TP.WY=ddply(subset(derm.dat.xtab,TP.screen==1),c("STATOIN","WY"),summar
 subset(derm.dat.xtab,STATOIN==q.sites$derm.wq[1])
 tail(subset(derm.dat.xtab,STATOIN==q.sites$derm.wq[1]),50L)
 
-q.wq=merge(q.dat,derm.dat.xtab,by.x=c("Date.EST","derm.wq"),by.y=c("DATE","STATOIN"),all.x=T)
+q.wq=merge(q.dat,derm.dat.xtab,by.x=c("Date.EST","derm.wq","WY"),by.y=c("DATE","STATOIN","WY"),all.x=T)
 q.wq=q.wq[order(q.wq$derm.wq,q.wq$Date.EST),]
 q.wq$TP.int=with(q.wq,ave(TP,derm.wq,FUN=function(x) dat.interp(x)))
 q.wq$TP.loadkg=with(q.wq,Load.Calc.kg(Data.Value,TP.int))
 
-plot(TP.loadkg~Date.EST,subset(q.wq,SITE=="S26"))
+q.wq$TN.int=with(q.wq,ave(TN,derm.wq,FUN=function(x) dat.interp(x)))
+q.wq$TN.loadkg=with(q.wq,Load.Calc.kg(Data.Value,TN.int))
+
+
+plot(TN.loadkg~Date.EST,subset(q.wq,SITE=="S26"))
 plot(TP.loadkg~Date.EST,subset(q.wq,SITE=="S27"))
 plot(TP.loadkg~Date.EST,subset(q.wq,SITE=="S28"))
 plot(TP.loadkg~Date.EST,subset(q.wq,SITE=="S29"))
 
-
-WY.load=ddply(subset(q.wq,WY%in%seq(2001,2017,1)),c("SITE","WY"),summarise,TFlow=sum(Data.Value,na.rm=T),TPLoad=sum(TP.loadkg,na.rm=T))
+WY.load=ddply(subset(q.wq,WY%in%seq(2001,2017,1)),c("SITE","WY"),summarise,
+              TFlow=sum(Data.Value,na.rm=T),
+              TPLoad=sum(TP.loadkg,na.rm=T),
+              TNLoad=sum(TN.loadkg,na.rm = T))
 WY.load$TP.FWM=with(WY.load,(TPLoad*1e6)/(TFlow*1233481.84))*1000
+WY.load$TN.FWM=with(WY.load,(TNLoad*1e6)/(TFlow*1233481.84))
+
+
+
+
 
 cols=hcl.colors(4,alpha = 0.5)
 
