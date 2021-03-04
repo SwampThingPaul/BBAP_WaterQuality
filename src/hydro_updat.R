@@ -132,7 +132,7 @@ plot(X_00480~dateTime,upstream.S28,ylim=c(0,2))
 par(family="serif",mar=c(1.5,3,0.25,3.5),oma=c(2,1,2,0.5));
 
 xlim.val=date.fun(c("2020-05-01","2021-05-01"));xmaj=seq(xlim.val[1],xlim.val[2],"3 months");xmin=seq(xlim.val[1],xlim.val[2],"1 months")
-ylim.val=c(25,35);by.y=2;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
+ylim.val=c(20,35);by.y=2;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
 
 plot(Wtemp~dateTime,upstream.S28,ylim=ylim.val,xlim=xlim.val,ann=F,axes=F,type="n",yaxs="i")
 abline(h=ymaj,v=xmaj,lty=3,col="grey")
@@ -142,7 +142,8 @@ mtext(side=2,line=2.5,"Water Temp (\u2103)")
 
 max.yval=with(subset(upstream.S28,WY==2021),round(ceiling(max(SpecCond,na.rm=T)+max(SpecCond,na.rm=T)*0.2),-3))
 ylim.val=c(0,max.yval);by.y=max.yval/4;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
-par(new=T);plot(SpecCond~dateTime,upstream.S28,ylim=ylim.val,xlim=xlim.val,ann=F,axes=F,type="n",yaxs="i")
+par(new=T);
+plot(SpecCond~dateTime,upstream.S28,ylim=ylim.val,xlim=xlim.val,ann=F,axes=F,type="n",yaxs="i")
 with(upstream.S28,lines(dateTime,SpecCond,col="dodgerblue1",lwd=2))
 axis_fun(4,ymaj,ymin,ymaj)
 axis_fun(1,xmaj,xmin,format(xmaj,"%m-%y"));box(lwd=1)
@@ -154,6 +155,30 @@ legend("topright",legend=c("Water Temp.","Spec. Cond."),
        col=c("indianred","dodgerblue1"),
        pt.cex=1.5,ncol=1,cex=1,bty="n",y.intersp=1,x.intersp=0.75,xpd=NA,xjust=0.5,yjust=0.5)
 dev.off()
+
+
+### 3 axis example
+par(family="serif",mar=c(1.5,3,0.25,6),oma=c(2,1,2,0.5));
+
+xlim.val=date.fun(c("2020-05-01","2021-05-01"));xmaj=seq(xlim.val[1],xlim.val[2],"3 months");xmin=seq(xlim.val[1],xlim.val[2],"1 months")
+ylim.val=c(20,35);by.y=2;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
+
+plot(Wtemp~dateTime,upstream.S28,ylim=ylim.val,xlim=xlim.val,ann=F,axes=F,type="n",yaxs="i")
+abline(h=ymaj,v=xmaj,lty=3,col="grey")
+with(upstream.S28,lines(dateTime,Wtemp,col="indianred1",lwd=2))
+axis_fun(2,ymaj,ymin,ymaj)
+mtext(side=2,line=2.5,"Water Temp (\u2103)")
+max.yval=with(subset(upstream.S28,WY==2021),round(ceiling(max(SpecCond,na.rm=T)+max(SpecCond,na.rm=T)*0.2),-3))
+ylim.val=c(0,max.yval);by.y=max.yval/4;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
+par(new=T);
+plot(SpecCond~dateTime,upstream.S28,ylim=ylim.val,xlim=xlim.val,ann=F,axes=F,type="n",yaxs="i")
+with(upstream.S28,lines(dateTime,SpecCond,col="dodgerblue1",lwd=2))
+axis_fun(4,ymaj,ymin,ymaj)
+ylim.val=c(0,2000);by.y=500;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
+par(new=T);
+plot(Data.Value~Date.EST,q.dat,ylim=ylim.val,xlim=xlim.val,ann=F,axes=F,type="n",yaxs="i")
+with(subset(q.dat,SITE=="S28"),lines(Date.EST,Data.Value,lty=1,lwd=2,col="forestgreen"))
+axis(4,ymaj,ymaj,line=3,las=2,col="forestgreen")
 
 #tiff(filename=paste0(plot.path,"S26_quickexample.tiff"),width=6.5,height=6,units="in",res=200,type="windows",compression=c("lzw"),bg="white")
 par(family="serif",mar=c(1.5,3,0.25,0.25),oma=c(3,3,1.5,0.5));
